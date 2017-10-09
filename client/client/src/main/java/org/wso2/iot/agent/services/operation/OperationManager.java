@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Base64;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -376,7 +377,7 @@ public abstract class OperationManager implements APIResultCallBack, VersionBase
             } else {
                 String[] userInfo = urlSplitter(operation, fileURL, false);
                 String ftpUserName;
-                if (!userName.isEmpty()) {
+                if (userName.isEmpty()) {
                     ftpUserName = userInfo[0];
                 } else {
                     ftpUserName = userName;
@@ -831,7 +832,12 @@ public abstract class OperationManager implements APIResultCallBack, VersionBase
                         fileLocation);
             } else {
                 String[] userInfo = urlSplitter(operation, fileURL, true);
-                String ftpUserName = userInfo[0];
+                String ftpUserName;
+                if (userName.isEmpty()) {
+                    ftpUserName = userInfo[0];
+                } else {
+                    ftpUserName = userName;
+                }
                 String uploadDirectory = userInfo[1];
                 String host = userInfo[2];
                 int serverPort = 0;
