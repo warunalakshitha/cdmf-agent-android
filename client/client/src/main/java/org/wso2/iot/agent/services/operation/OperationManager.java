@@ -32,6 +32,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.util.Base64;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
