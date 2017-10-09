@@ -17,12 +17,14 @@
  */
 package org.wso2.iot.agent.services.operation;
 
+import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.location.Location;
@@ -32,9 +34,13 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.android.internal.preference.YesNoPreference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -384,7 +390,7 @@ public abstract class OperationManager implements APIResultCallBack, VersionBase
             } else {
                 String[] userInfo = urlSplitter(operation, fileURL, false);
                 String ftpUserName;
-                if (!userName.isEmpty()) {
+                if (userName.isEmpty()) {
                     ftpUserName = userInfo[0];
                 } else {
                     ftpUserName = userName;
@@ -828,6 +834,40 @@ public abstract class OperationManager implements APIResultCallBack, VersionBase
     public void uploadFile(Operation operation) throws AndroidAgentException {
         String fileName = "Unknown";
         validateOperation(operation);
+
+//        operation.setStatus(getContextResources().getString(R.string.operation_value_progress));
+//        getResultBuilder().build(operation);
+//
+//        YesNoPreference yesNoPreference = new YesNoPreference(context);
+//        yesNoPreference.on
+//
+//
+//
+//        Intent intent = new Intent(context,OperationManager.class);
+//
+////        intent.putExtra(resources.getString(R.string.intent_extra_type),
+////                resources.getString(R.string.intent_extra_ring));
+////        intent.putExtra(resources.getString(R.string.intent_extra_message_text),
+////                resources.getString(R.string.intent_extra_stop_ringing));
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP |
+//                Intent.FLAG_ACTIVITY_NEW_TASK);
+//
+//
+//
+//        new AlertDialog.Builder(context)
+//                .setTitle("Title")
+//                .setMessage("Do you really want to whatever?")
+//                .setIcon(android.R.drawable.ic_dialog_alert)
+//                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//
+//                    public void onClick(DialogInterface dialog, int whichButton) {
+//                        Toast.makeText(context, "Yaay", Toast.LENGTH_SHORT).show();
+//                    }})
+//                .setNegativeButton(android.R.string.no, null);
+//
+//        context.startActivity(intent);
+
+
         try {
             JSONObject inputData = new JSONObject(operation.getPayLoad().toString());
             final String fileURL = inputData.getString(Constants.FileTransfer.FILE_URL);
@@ -839,7 +879,12 @@ public abstract class OperationManager implements APIResultCallBack, VersionBase
                         fileLocation);
             } else {
                 String[] userInfo = urlSplitter(operation, fileURL, true);
-                String ftpUserName = userInfo[0];
+                String ftpUserName;
+                if (userName.isEmpty()) {
+                    ftpUserName = userInfo[0];
+                } else {
+                    ftpUserName = userName;
+                }
                 String uploadDirectory = userInfo[1];
                 String host = userInfo[2];
                 int serverPort = 0;
